@@ -1,0 +1,109 @@
+Output "Dell Inc. DELL U2715H H7YCC57804GL" (HDMI-A-1)
+  Current mode: 2560x1440 @ 59.951 Hz (preferred)
+  Variable refresh rate: not supported
+  Physical size: 600x340 mm
+  Logical position: 3147, 1120
+  Logical size: 2560x1440
+  Scale: 1
+  Transform: normal
+  Available modes:
+    2560x1440@59.951 (current, preferred)
+    2048x1152@60.000
+    1920x1200@59.885
+    1920x1080@60.000
+    1920x1080@59.939
+    1920x1080@50.000
+    1920x1080@29.972
+    1920x1080@25.000
+    1920x1080@23.977
+    1600x1200@60.000
+    1680x1050@59.954
+    1280x1024@75.025
+    1280x1024@60.020
+    1200x960@59.997
+    1152x864@75.000
+    1280x720@60.000
+    1280x720@59.943
+    1280x720@50.000
+    1024x768@75.029
+    1024x768@60.004
+    800x600@75.000
+    800x600@60.317
+    720x576@50.000
+    720x480@59.940
+    640x480@75.000
+    640x480@59.940
+    640x480@59.929
+
+Output "Dell Inc. DELL U2715H H7YCC57804ML" (DP-2)
+  Current mode: 2560x1440 @ 59.951 Hz (preferred)
+  Variable refresh rate: not supported
+  Physical size: 600x340 mm
+  Logical position: 1707, 0
+  Logical size: 1440x2560
+  Scale: 1
+  Transform: 90° counter-clockwise
+  Max bits per channel: 8
+  Available modes:
+    2560x1440@59.951 (current, preferred)
+    2048x1152@60.000
+    1920x1200@59.885
+    1920x1080@60.000
+    1920x1080@60.000
+    1920x1080@59.940
+    1920x1080@50.000
+    1920x1080@30.000
+    1920x1080@29.970
+    1920x1080@25.000
+    1920x1080@24.000
+    1920x1080@23.976
+    1600x1200@60.000
+    1680x1050@59.954
+    1280x1024@75.025
+    1280x1024@60.020
+    1200x960@59.994
+    1152x864@75.000
+    1280x720@60.000
+    1280x720@60.000
+    1280x720@59.940
+    1280x720@50.000
+    1024x768@75.029
+    1024x768@60.004
+    800x600@75.000
+    800x600@60.317
+    720x576@50.000
+    720x480@60.000
+    720x480@60.000
+    720x480@59.940
+    720x480@59.940
+    720x480@59.940
+    640x480@75.000
+    640x480@60.000
+    640x480@59.940
+    640x480@59.940
+    720x400@70.082
+
+Output "Thermotrex Corporation TL140BDXP02-0 Unknown" (eDP-1)
+  Current mode: 2560x1440 @ 165.003 Hz (preferred)
+  Variable refresh rate: supported, disabled
+  Physical size: 310x170 mm
+  Logical position: 0, 1600
+  Logical size: 1706x960
+  Scale: 1.5
+  Transform: normal
+  Max bits per channel: 8
+  Available modes:
+    2560x1440@165.003 (current, preferred)
+    2560x1440@60.000 (preferred)
+    1920x1200@165.003
+    1920x1080@165.003
+    1600x1200@165.003
+    1680x1050@165.003
+    1280x1024@165.003
+    1440x900@165.003
+    1280x800@165.003
+    1280x720@165.003
+    1024x768@165.003
+    800x600@165.003
+    640x480@165.003
+
