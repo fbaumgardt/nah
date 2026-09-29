@@ -1,0 +1,111 @@
+// docs/keybinds.kdl — paste the lines marked for copying into the `binds` node
+// of your niri config (biri). File format and bind syntax are niri's; there is
+// nothing here the compositor parses directly — copy the pieces, don't
+// `include` this file.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// WARNING — niri 26.04 LEAKS A PROCESS FOR EVERY FAILED `spawn`.
+//
+// Observed live in this session on 2026-09-29: a bare `spawn "nah"` bind
+// ENOENT'd 1793 times (the client was not in niri's PATH) and leaked one
+// Command-Spawner child process per failure. The leak grew to ≈ 12 GB RAM plus
+// the full 8 GB swap and triggered a kernel OOM cascade that killed unrelated
+// applications.
+//
+// `spawn` does NOT run a shell and does NOT search your shell's PATH; it execs
+// the program directly in niri's environment. ALWAYS use an absolute path (as
+// in every bind below), or verify the name resolves in niri's PATH:
+//
+//     tr '\0' '\n' < /proc/$(pgrep -x niri)/environ | grep '^PATH='
+//
+// (with a biri binary, `pgrep -x biri`). Never ship a bind that can ENOENT.
+// Worth reporting upstream to niri: a failed spawn should not leak a child.
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// ONE chord set, screen-relative meaning, on every monitor:
+//
+//   Mod+Shift+H / L : "move the window one screen slot left / right"
+//   Mod+Shift+K / J : "move the window one screen slot up / down"
+//
+// The `nah` daemon watches the focused output's transform and resolves the
+// same chord to a different compositor action per orientation (tables locked
+// and verified against the running niri 26.04 session — see
+// docs/phase0-findings.md):
+//
+//   Horizontal output (transform 0 / 180 / flipped 0 / flipped 180):
+//     move-left   -> ConsumeOrExpelWindowLeft
+//     move-right  -> ConsumeOrExpelWindowRight
+//     move-up     -> MoveWindowUp
+//     move-down   -> MoveWindowDown
+//
+//   Vertical output (transform 90 / 270 / flipped 90 / flipped 270):
+//     move-left   -> MoveColumnLeft
+//     move-right  -> MoveColumnRight
+//     move-up     -> ConsumeOrExpelWindowLeft
+//     move-down   -> ConsumeOrExpelWindowRight
+//
+// A window travels across monitors with the same key.
+//
+//
+// ### Start the daemon with the compositor
+//
+// Spawned processes inherit $NIRI_SOCKET, and a fresh one on every compositor
+// restart, so no `systemctl --user import-environment` line is needed.
+//
+// Use the ABSOLUTE install path: bare `nah` works only while niri's own PATH
+// resolves it, which is not the shell's PATH (see the warning above). The path
+// below is the working config on this machine; adjust it if you installed
+// elsewhere.
+spawn-at-startup "/home/fbaumgardt/.local/bin/nah" "--daemon"
+//
+// If you launch via systemd instead (docs/nah.service), DELETE this line.
+// Running both launch paths at once makes the second instance hit the
+// daemon's live-socket guard and exit non-zero.
+//
+//
+// ### Binds
+//
+// These four lines REPLACE the old consume/expel/move binds once wired to
+// these actions directly:
+//   consume-or-expel-window-left / -right, move-window-up / -down
+// (plus, on the rotated output, the old move-window-left / -right / whatever
+// covers move-column-left / -right). Pick a free chord if any of these is
+// already bound; on a conflict niri rejects the config on reload and shows a
+// notification — pick a free chord.
+//
+// Absolute path in every bind: see the leak warning above.
+Mod+Shift+H { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
+Mod+Shift+L { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
+Mod+Shift+K { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
+Mod+Shift+J { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+//
+// (The live config on this machine uses the same absolute path under
+// Mod+Ctrl+H/L/K/J; keep the chord set ONE or the meanings overlap.)
+//
+// ### Key-repeat note
+//
+// `spawn` execs the client each press — fork/exec plus one socket round trip,
+// a few milliseconds. Holding a chord for 5 s floods the daemon with retries,
+// which is the intended volume; the daemon answers each with ok/err and no
+// processes pile up (each client exits after its reply or ~100 ms timeout).
+//
+//
+// ### Alternative chords (uncomment, or swap letters to taste)
+//
+// Arrow-style:
+//
+// Mod+Left  { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
+// Mod+Right { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
+// Mod+Up    { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
+// Mod+Down  { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+//
+// no-modifier-shift style — beware: bare-letter binds swallow the key in the
+// compositor, breaking texting into other apps on that chord:
+//
+// Mod+H { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
+// Mod+L { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
+// Mod+K { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
+// Mod+J { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+//
+// Keep the chord set ONE; the whole point is that its meaning follows the
+// focused monitor's orientation, not the letter.

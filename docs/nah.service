@@ -1,0 +1,64 @@
+# docs/nah.service — systemd USER unit for `nah`, the output-aware keybind
+# router for niri/biri.
+#
+# Use ONLY as a fallback for setups that don't use `spawn-at-startup`.
+# Install to: ~/.config/systemd/user/nah.service
+#
+# Pick exactly ONE launch path:
+#   - `spawn-at-startup "nah" "--daemon"` in the niri config, OR
+#   - this unit.
+# If both run, the second instance hits the daemon's live-socket guard
+# ($XDG_RUNTIME_DIR/nah.sock already accepting connections) and exits
+# non-zero instead of stealing the live socket.
+#
+# ### Environment: NIRI_SOCKET (read this before enabling)
+#
+# On the spawn-at-startup path, niri itself spawns `nah`, so the daemon
+# inherits $NIRI_SOCKET — and a fresh one on every compositor restart; no
+# `systemctl --user import-environment` line is needed in this scenario.
+#
+# Under systemd there is no such inheritance: a user unit sees the user
+# manager's environment, not the compositor's. The standard bridge is for the
+# compositor to run `systemctl --user import-environment` of the session
+# variables at startup (NIRI_SOCKET is the one this unit needs).
+#
+# UNVERIFIED (against the running niri 26.04 session): whether niri 26.04
+# already imports NIRI_SOCKET into the systemd user environment, and the
+# exact import line to use. Candidate forms — note the whole-environment
+# variant takes NO variable names:
+#   spawn-at-startup "systemctl" "--user" "import-environment" "NIRI_SOCKET"
+#   spawn-at-startup "systemctl" "--user" "import-environment"
+# Verify what actually applies before relying on it:
+#   systemctl --user show-environment NIRI_SOCKET
+# and add the VERIFIED line as a `spawn-at-startup` entry in the niri config.
+#
+# If the import turns out not to be wired up, one workaround is to drop an
+# Environment= line once the socket path is known (the path is
+# instance-specific, e.g. /run/user/1000/niri.wayland-1.40041.sock, so it
+# must be set per session, not baked into this file):
+#   Environment=NIRI_SOCKET=/run/user/1000/niri.wayland-1.40041.sock
+#
+# The daemon fails fast and loudly on a missing NIRI_SOCKET with the one-line
+# message: "NIRI_SOCKET is not set; is the compositor running?"
+# (verified: exit status 1). The unit's Restart=on-failure then retries every
+# RestartSec=2, up to systemd's default start-rate limit, so the daemon comes
+# back on its own once the variable is present.
+#
+# The unit file is only metadata; it is not run by `systemctl` from this
+# location. Enable with:
+#   install -Dm644 docs/nah.service ~/.config/systemd/user/nah.service
+#   systemctl --user daemon-reload && systemctl --user enable --now nah.service
+
+[Unit]
+Description=nah — output-aware keybind router for niri
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+# Adjust to the real install path.
+ExecStart=%h/.local/bin/nah --daemon
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target
