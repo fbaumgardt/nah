@@ -55,8 +55,9 @@ After=graphical-session.target
 PartOf=graphical-session.target
 
 [Service]
-# Adjust to the real install path.
-ExecStart=%h/.local/bin/nah --daemon
+# Binary provided by home-manager via the nah flake input
+# (pre-HM fallback: the hand-installed %h/.local/bin/nah).
+ExecStart=%h/.nix-profile/bin/nah --daemon
 Restart=on-failure
 RestartSec=2
 

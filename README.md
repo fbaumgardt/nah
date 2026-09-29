@@ -121,7 +121,7 @@ The repository is a flake: it exposes `packages.<system>.default` (and an
 }
 
 # home-manager
-home.packages = [ inputs.nah.packages.${pkgs.system}.default ];
+home.packages = [ inputs.nah.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 ```
 
 ### Migration from the hand-installed copy
