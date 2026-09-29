@@ -80,6 +80,8 @@ cargo build --release
 install -m755 target/release/nah ~/.local/bin/nah
 ```
 
+On NixOS, prefer the home-manager flake path in *Packaging (Nix)* below.
+
 **Use absolute paths in every niri bind.** `spawn` runs no shell and does not
 search your shell's `PATH`; niri 26.04 also **leaks one child process for
 every failed `spawn`** — a bare `spawn "nah"` bind that cannot resolve ENOENTs
@@ -104,6 +106,39 @@ spawn-at-startup "/home/YOU/.local/bin/nah" "--daemon"
 No `import-environment` line is needed on this path: niri spawns the daemon
 itself, so it inherits `$NIRI_SOCKET` (and a fresh one after every compositor
 restart).
+
+## Packaging (Nix)
+
+The repository is a flake: it exposes `packages.<system>.default` (and an
+`overlays.default` for convenience), built with
+`rustPlatform.buildRustPackage` from the committed `Cargo.lock`. The full
+49-test suite runs inside the sandboxed build (`doCheck = true`).
+
+```nix
+# flake.nix
+{
+  inputs.nah.url = "github:fbaumgardt/nah/v0.1.0";
+}
+
+# home-manager
+home.packages = [ inputs.nah.packages.${pkgs.system}.default ];
+```
+
+### Migration from the hand-installed copy
+
+The manual `~/.local/bin/nah` install (see *Install*) keeps working until the
+swap is done; follow this order so the compositor is never left with a daemon
+whose binary you just deleted.
+
+1. Rebuild the home-manager configuration with the `nah` input above.
+2. Point `spawn-at-startup` and the four binds in the niri config at the
+   profile path `/home/fbaumgardt/.nix-profile/bin/nah` (adjust the home path
+   for your user). Keep it absolute: that directory *is* in niri's PATH, but
+   a bind that can ever fail to exec must not be shipped (see the leak
+   warning at the top of `docs/keybinds.kdl`).
+3. Reboot. `spawn-at-startup` brings up the hardened daemon from the
+   home-manager binary.
+4. Only then remove the old copy: `rm ~/.local/bin/nah`.
 
 ## Usage
 

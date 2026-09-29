@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Output-aware keybind router for niri/biri"
 license = "MIT"
+repository = "https://github.com/fbaumgardt/nah"
 
 [features]
 default = ["daemon"]

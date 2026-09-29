@@ -54,9 +54,10 @@
 //
 // Use the ABSOLUTE install path: bare `nah` works only while niri's own PATH
 // resolves it, which is not the shell's PATH (see the warning above). The path
-// below is the working config on this machine; adjust it if you installed
-// elsewhere.
-spawn-at-startup "/home/fbaumgardt/.local/bin/nah" "--daemon"
+// below is the home-manager profile path (see "Packaging (Nix)" in
+// README.md); before home-manager, the hand-installed copy lived at
+// ~/.local/bin/nah. Adjust it if you installed elsewhere.
+spawn-at-startup "/home/fbaumgardt/.nix-profile/bin/nah" "--daemon"
 //
 // If you launch via systemd instead (docs/nah.service), DELETE this line.
 // Running both launch paths at once makes the second instance hit the
@@ -74,10 +75,10 @@ spawn-at-startup "/home/fbaumgardt/.local/bin/nah" "--daemon"
 // notification — pick a free chord.
 //
 // Absolute path in every bind: see the leak warning above.
-Mod+Shift+H { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
-Mod+Shift+L { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
-Mod+Shift+K { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
-Mod+Shift+J { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+Mod+Shift+H { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-left"; }
+Mod+Shift+L { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-right"; }
+Mod+Shift+K { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-up"; }
+Mod+Shift+J { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-down"; }
 //
 // (The live config on this machine uses the same absolute path under
 // Mod+Ctrl+H/L/K/J; keep the chord set ONE or the meanings overlap.)
@@ -94,18 +95,18 @@ Mod+Shift+J { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
 //
 // Arrow-style:
 //
-// Mod+Left  { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
-// Mod+Right { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
-// Mod+Up    { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
-// Mod+Down  { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+// Mod+Left  { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-left"; }
+// Mod+Right { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-right"; }
+// Mod+Up    { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-up"; }
+// Mod+Down  { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-down"; }
 //
 // no-modifier-shift style — beware: bare-letter binds swallow the key in the
 // compositor, breaking texting into other apps on that chord:
 //
-// Mod+H { spawn "/home/fbaumgardt/.local/bin/nah" "move-left"; }
-// Mod+L { spawn "/home/fbaumgardt/.local/bin/nah" "move-right"; }
-// Mod+K { spawn "/home/fbaumgardt/.local/bin/nah" "move-up"; }
-// Mod+J { spawn "/home/fbaumgardt/.local/bin/nah" "move-down"; }
+// Mod+H { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-left"; }
+// Mod+L { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-right"; }
+// Mod+K { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-up"; }
+// Mod+J { spawn "/home/fbaumgardt/.nix-profile/bin/nah" "move-down"; }
 //
 // Keep the chord set ONE; the whole point is that its meaning follows the
 // focused monitor's orientation, not the letter.
