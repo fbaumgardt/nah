@@ -1,0 +1,25 @@
+[package]
+name = "nah"
+version = "0.1.0"
+edition = "2021"
+description = "Output-aware keybind router for niri/biri"
+license = "MIT"
+
+[features]
+default = ["daemon"]
+# The long-lived daemon needs JSON plus rustix for the SO_PEERCRED check on its
+# own socket and libc for the SIGTERM/SIGINT handlers. The std-only client path
+# must build with `--no-default-features` and must never pull serde.
+daemon = ["dep:serde", "dep:serde_json", "dep:rustix", "dep:libc"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+# `time` is required by rustix's net code (it uses its `timespec` module there).
+rustix = { version = "1.0", features = ["net", "time"], optional = true }
+# libc is already in the tree via rustix; it is used directly for the
+# SIGTERM/SIGINT handlers and `geteuid`.
+libc = { version = "0.2", optional = true }
+
+[dev-dependencies]
+libc = "0.2"
