@@ -38,7 +38,7 @@
         });
 
       overlays.default = final: prev: {
-        nah = self.packages.${final.system}.default;
+        nah = self.packages.${final.stdenv.hostPlatform.system}.default;
       };
     };
 }
